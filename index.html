@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHOOMCORE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        :root {
+            --neon-red: #ff003c;
+            --neon-white: #ffffff;
+            --dark-bg: #000000;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'VT323', monospace;
+        }
+
+        .title-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        .cyber-title {
+            font-size: 10rem;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            position: relative;
+            line-height: 1;
+            font-weight: normal;
+            margin: 0;
+            animation: glitch-effect 5s infinite;
+        }
+
+        .choom {
+            color: var(--neon-white);
+            text-shadow: 
+                0 0 10px var(--neon-white),
+                0 0 20px rgba(255, 255, 255, 0.7);
+            position: relative;
+        }
+
+        .choom::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-white), transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        .core {
+            color: var(--neon-red);
+            text-shadow: 
+                0 0 10px var(--neon-red),
+                0 0 20px rgba(255, 0, 60, 0.7);
+            animation: flicker 0.3s infinite alternate;
+        }
+
+        /* Efeito de glitch */
+        @keyframes glitch-effect {
+            0%, 100% {
+                transform: translate(0);
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            5% {
+                clip-path: polygon(0 28%, 100% 28%, 100% 33%, 0 33%);
+                transform: translate(-3px);
+            }
+            10% {
+                clip-path: polygon(0 63%, 100% 63%, 100% 68%, 0 68%);
+                transform: translate(3px);
+            }
+            15% {
+                clip-path: polygon(0 28%, 100% 28%, 100% 33%, 0 33%);
+                transform: translate(-3px);
+            }
+            20% {
+                clip-path: polygon(0 83%, 100% 83%, 100% 88%, 0 88%);
+                transform: translate(3px);
+            }
+            25% {
+                clip-path: polygon(0 28%, 100% 28%, 100% 33%, 0 33%);
+                transform: translate(-3px);
+            }
+            30% {
+                clip-path: polygon(0 63%, 100% 63%, 100% 68%, 0 68%);
+                transform: translate(3px);
+            }
+            35% {
+                clip-path: polygon(0 88%, 100% 88%, 100% 93%, 0 93%);
+                transform: translate(-3px);
+            }
+            40%, 100% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                transform: translate(0);
+            }
+        }
+
+        /* Efeito de flicker */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+                text-shadow: 
+                    0 0 10px var(--neon-red),
+                    0 0 20px var(--neon-red);
+            }
+            20%, 24%, 55% {        
+                opacity: 0.7;
+                text-shadow: none;
+            }
+        }
+
+        /* Efeito de scanline */
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Efeito de partículas */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+            animation: particle-float linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(calc(var(--random-x) * 100px));
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) translateX(calc(var(--random-x) * 200px));
+                opacity: 0;
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .cyber-title {
+                font-size: 5rem;
+                letter-spacing: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cyber-title {
+                font-size: 3rem;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="title-container">
+        <h1 class="cyber-title">
+            <span class="choom">CH00M</span><span class="core">C0R3</span>
+        </h1>
+    </div>
+
+    <script>
+        // Cria partículas dinâmicas
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 100;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Configurações aleatórias
+                const size = Math.random() * 3 + 1;
+                const left = Math.random() * 100;
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * -20;
+                const opacity = Math.random() * 0.7 + 0.1;
+
+                particle.style.setProperty('--random-x', (Math.random() > 0.5 ? 1 : -1) * Math.random() * 2);
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${Math.random() * 100 + 100}%`;
+                particle.style.opacity = opacity;
+                particle.style.animation = `particle-float ${duration}s ${delay}s infinite`;
+                
+                // Cores aleatórias (principalmente vermelho e branco)
+                const colors = ['#ff003c', '#ffffff'];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Efeito de interação com o mouse
+        document.addEventListener('mousemove', (e) => {
+            const title = document.querySelector('.cyber-title');
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            title.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        // Inicia os efeitos
+        createParticles();
+    </script>
+</body>
+</html>
